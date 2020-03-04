@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Extctract coordinates to nicely formatted text :)</h2>
+<textarea id="inputText" rows = "15" cols = "60">
+</textarea>
+
+<select id="coordPatterns">
+  <option>LatLon</option>
+</select>
+
+<button type="button" onclick="extractCoordinates()">Get coordintes</button>
+
+<textarea id="outputText" rows = "15" cols = "60">
+</textarea>
+
+
+<script>
+
+patternLatSpaceLon = /\d{6}[NS]\s\d{7}[EW]/g;
+patternLatLon = /\d{4}[NS]\d{5}[EW]/g;  // Example: 5430N01930E
+
+function getInputText() {
+  text = document.getElementById("inputText").value;
+  lines = text.split('\n');
+  inputText = lines.join('');
+  return inputText;
+}
+
+function getCoordsList(text, pattern) {
+	coordsList = text.match(pattern);
+	return coordsList;
+}
+
+function suffixToPrefix(coord) {
+	suffix = coord.charAt(coord.length - 1);
+	coordWithoutSuffix = coord.slice(0, coord.length - 1);
+	coordPrefix = suffix + coordWithoutSuffix;
+	return coordPrefix;
+}
+
+function getPrefixCoordListLatSpaceLon(suffixCoordList) {
+	prefixCoords = [];
+	var i;
+	for (i = 0; i < suffixCoordList.length; i++) {
+		coordPair = suffixCoordList[i].split(' ');
+		lat = coordPair[0];
+		lon = coordPair[1];
+		prefixLat = suffixToPrefix(lat);
+		prefixLon = suffixToPrefix(lon);
+		prefixCoord = prefixLat + " " + prefixLon;
+		prefixCoords.push(prefixCoord);
+	}
+	return prefixCoords;
+}
+
+function getPrefixCoordListLatLon(suffixCoordList) {
+	prefixCoords = [];
+	var i;
+	for (i = 0; i < suffixCoordList.length; i++) {
+		coordPair = suffixCoordList[i].split(' ');
+		lat = coordPair.slice(0, 5);
+		lon = coordPair.slice(5);
+		prefixLat = suffixToPrefix(lat);
+		prefixLon = suffixToPrefix(lon);
+		prefixCoord = prefixLat + " " + prefixLon;
+		prefixCoords.push(prefixCoord);
+	}
+	return prefixCoords;
+}
+
+
+function getFormattedCoords(coords_list) {
+	var text = "";
+	var i;
+	for (i = 0; i < coords_list.length; i++) {
+		text += coords_list[i] + "\n";
+	}
+	return text;
+}
+
+function extractCoordinates() {
+	inputText = getInputText();
+	suffixCoordList = getCoordsList(inputText, patternLatSpaceLon);
+	prefixCoordList = getPrefixCoordListLatSpaceLon(suffixCoordList);
+	formattedPrefixCoordList = getFormattedCoords(prefixCoordList);
+	document.getElementById("outputText").value= formattedPrefixCoordList;
+}
+
+</script>
+
+</body>
+</html>
