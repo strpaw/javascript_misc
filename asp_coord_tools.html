@@ -2,12 +2,13 @@
 <html>
 <body>
 
-<h2>Extctract coordinates to nicely formatted text :)</h2>
+<h2>Extctract coordinates to nicely formatted text</h2>
 <textarea id="inputText" rows = "15" cols = "60">
 </textarea>
 
 <select id="coordPatterns">
-  <option>LatLon</option>
+  <option value="LatLon">LatLon</option>
+  <option value="LatSpaceLon">LatSpaceLon</option>
 </select>
 
 <button type="button" onclick="extractCoordinates()">Get coordintes</button>
@@ -18,18 +19,34 @@
 
 <script>
 
-patternLatSpaceLon = /\d{6}[NS]\s\d{7}[EW]/g;
-patternLatLon = /\d{4}[NS]\d{5}[EW]/g;  // Example: 5430N01930E
+var patternLatLon = /\d{4,}[NS]\d{5,}[EW]/g;  // Example: 5430N01930E
+var patternLatSpaceLon = /\d{4,}[NS]\s\d{5,}[EW]/g;  //  Example: 543000N 0193000E
 
 function getInputText() {
-  text = document.getElementById("inputText").value;
-  lines = text.split('\n');
-  inputText = lines.join('');
+  var text = document.getElementById("inputText").value;
+  var lines = text.split('\n');
+  var inputText = lines.join('');
   return inputText;
 }
 
+function getCoordPattern() {
+	var patterns = document.getElementById("coordPatterns");
+  var i = patterns.selectedIndex;
+  var option = patterns.options[i].value;
+  var pattern;
+
+  switch (option) {
+    case "LatLon":
+      pattern = patternLatLon;
+      break;
+    case "LatSpaceLon":
+      pattern = patternLatSpaceLon;
+  }
+  return pattern;
+}
+
 function getCoordsList(text, pattern) {
-	coordsList = text.match(pattern);
+	var coordsList = text.match(pattern);
 	return coordsList;
 }
 
@@ -40,8 +57,22 @@ function suffixToPrefix(coord) {
 	return coordPrefix;
 }
 
-function getPrefixCoordListLatSpaceLon(suffixCoordList) {
-	prefixCoords = [];
+function getPrefixLatLonCoordsList(suffixCoordList) {
+	var prefixCoords = [];
+	var i;
+	for (i = 0; i < suffixCoordList.length; i++) {
+		lat = suffixCoordList[i].slice(0, 5);
+		lon = suffixCoordList[i].slice(5);
+		prefixLat = suffixToPrefix(lat);
+		prefixLon = suffixToPrefix(lon);
+		prefixCoord = prefixLat + " " + prefixLon;
+		prefixCoords.push(prefixCoord);
+	}
+	return prefixCoords;
+}
+
+function getPrefixLatSpaceLonCoordsList(suffixCoordList) {
+	var prefixCoords = [];
 	var i;
 	for (i = 0; i < suffixCoordList.length; i++) {
 		coordPair = suffixCoordList[i].split(' ');
@@ -55,38 +86,38 @@ function getPrefixCoordListLatSpaceLon(suffixCoordList) {
 	return prefixCoords;
 }
 
-function getPrefixCoordListLatLon(suffixCoordList) {
-	prefixCoords = [];
-	var i;
-	for (i = 0; i < suffixCoordList.length; i++) {
-		coordPair = suffixCoordList[i].split(' ');
-		lat = coordPair.slice(0, 5);
-		lon = coordPair.slice(5);
-		prefixLat = suffixToPrefix(lat);
-		prefixLon = suffixToPrefix(lon);
-		prefixCoord = prefixLat + " " + prefixLon;
-		prefixCoords.push(prefixCoord);
+function getPrefixCoordsList(suffixCoordsList, pattern) {
+	var prefixCoordsList = [];
+	if (pattern == patternLatSpaceLon) {
+		prefixCoordsList = getPrefixLatSpaceLonCoordsList(suffixCoordsList);
+	} else if (pattern == patternLatLon) {
+		prefixCoordsList = getPrefixLatLonCoordsList(suffixCoordsList);
 	}
-	return prefixCoords;
+	return prefixCoordsList;
 }
 
-
-function getFormattedCoords(coords_list) {
+function getFormattedCoords(coordsList) {
 	var text = "";
 	var i;
-	for (i = 0; i < coords_list.length; i++) {
-		text += coords_list[i] + "\n";
+	for (i = 0; i < coordsList.length; i++) {
+		text += coordsList[i] + "\n";
 	}
 	return text;
 }
 
 function extractCoordinates() {
-	inputText = getInputText();
-	suffixCoordList = getCoordsList(inputText, patternLatSpaceLon);
-	prefixCoordList = getPrefixCoordListLatSpaceLon(suffixCoordList);
-	formattedPrefixCoordList = getFormattedCoords(prefixCoordList);
-	document.getElementById("outputText").value= formattedPrefixCoordList;
+
+  var inputText, selectedPattern;
+  var suffixCoordsList = [], prefixCoordsList = [];
+
+  document.getElementById("outputText").value = "";
+  inputText = getInputText();
+  selectedPattern = getCoordPattern();
+  suffixCoordsList = getCoordsList(inputText, selectedPattern);
+  prefixCoordsList = getPrefixCoordsList(suffixCoordsList, selectedPattern);
+  document.getElementById("outputText").value = getFormattedCoords(prefixCoordsList);
 }
+
 
 </script>
 
