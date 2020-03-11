@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html>
 <body>
+<div id="page">
+  <div id="header" style="text-align: center; margin: 5px">
+    <h2>Coordinates parser</h2>
+  </div>
 
-<h2>Extctract coordinates to nicely formatted text</h2>
-<textarea id="inputText" rows = "15" cols = "60">
-</textarea>
+  <div id="left" style="float: left; margin: 5px">
+    <h3>Plain text with coordinates:</h3>
+    <textarea id="inputText" rows = "15" cols = "60">
+    </textarea>
+  </div>
 
-<select id="coordPatterns">
-  <option value="LatLon">LatLon</option>
-  <option value="LatSpaceLon">LatSpaceLon</option>
-</select>
+  <div id="center" style="float: left; margin: 5px">
+    <h3>Coordinate format:</h3>
+    <select id="coordPatterns">
+      <option value="LatLon">LatLon</option>
+      <option value="LatSpaceLon">LatSpaceLon</option>
+    </select>
+    <br>
+    <button type="button" onclick="extractCoordinates()">Get coordintes</button>
+  </div>
 
-<button type="button" onclick="extractCoordinates()">Get coordintes</button>
-
-<textarea id="outputText" rows = "15" cols = "60">
-</textarea>
+  <div id="right" style="float: left; margin: 5px">
+    <h3>Extracted coordinates:</h3>
+    <textarea id="outputText" rows = "15" cols = "60">
+    </textarea>
+  </div>
+</div>
 
 
 <script>
@@ -117,7 +130,6 @@ function extractCoordinates() {
   prefixCoordsList = getPrefixCoordsList(suffixCoordsList, selectedPattern);
   document.getElementById("outputText").value = getFormattedCoords(prefixCoordsList);
 }
-
 
 </script>
 
