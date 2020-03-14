@@ -3,31 +3,39 @@
 <body>
 <div id="page">
   <div id="header" style="text-align: center; margin: 5px">
-    <h2>Coordinates parser</h2>
+    <h2 style="font-family:verdana; text-align: left;">Welcome to coordinates parser</h2>
+    <p style="font-family:verdana; text-align: left;">
+      Coordinates parser is a tool to extract coordinates in user defined format from plain text.<br>
+      Enter the plain text with coordinates, choose Coordinates Format and click Get Coordinates.
+    </p>
   </div>
 
   <div id="left" style="float: left; margin: 5px">
-    <h3>Plain text with coordinates:</h3>
-    <textarea id="inputText" rows = "15" cols = "60">
+    <h3 style="text-align: center;">Plain text with coordinates:</h3>
+    <textarea id="inputText" rows = "15" cols = "70">
     </textarea>
   </div>
 
   <div id="center" style="float: left; margin: 5px">
-    <h3>Coordinate format:</h3>
-    <select id="coordPatterns">
+    <h3>Coordinates format:</h3>
+    <select id="coordPatterns" style="display: block; margin: 0 auto;">
       <option value="LatLon">LatLon</option>
       <option value="LatSpaceLon">LatSpaceLon</option>
     </select>
-    <br>
-    <button type="button" onclick="extractCoordinates()">Get coordintes</button>
   </div>
 
   <div id="right" style="float: left; margin: 5px">
-    <h3>Extracted coordinates:</h3>
-    <textarea id="outputText" rows = "15" cols = "60">
+    <h3 style="text-align: center;">Extracted coordinates:</h3>
+    <textarea id="outputText" rows = "15" cols = "70">
     </textarea>
   </div>
+
+  <div id="bottom" style="clear: both;">
+    <button type="button" onclick="extractCoordinates()" style="display: block; margin: 0 auto; padding: 10px;">Get Coordintes</button>
+  </div>
+
 </div>
+
 
 
 <script>
